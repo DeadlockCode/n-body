@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-quarkstrom = { git = "https://github.com/DeadlockCode/quarkstrom", rev = "db52869" }
+quarkstrom = { git = "https://github.com/DeadlockCode/quarkstrom", rev = "8aa27dba1739f09b4d1372faa8553e64a3f0549d" }
 ultraviolet = { version = "0.9.1", features = ["f64"] }
 
 fastrand = "2.0.0"

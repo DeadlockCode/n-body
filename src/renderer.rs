@@ -78,7 +78,7 @@ impl quarkstrom::Renderer for Renderer {
 
             for i in 0..bodies.len() {
                 let p = bodies[i].pos;
-                ctx.draw_circle(Vec2::new(p.x as f32, p.y as f32), 0.05, 0xffffff);
+                ctx.draw_circle(Vec2::new(p.x as f32, p.y as f32), 0.05, [0xff, 0xff, 0xff, 0xff]);
             }
         };
     }

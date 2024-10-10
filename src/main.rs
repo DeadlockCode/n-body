@@ -22,25 +22,28 @@ fn main() {
     let config = quarkstrom::Config {
         window_mode: quarkstrom::WindowMode::Windowed(900, 900),
     };
-    quarkstrom::run::<Renderer>(config);
 
     let mut simulation = Simulation::new(START_SEED);
 
     let mut loop_limiter: Option<LoopLimiter> = Some(LoopLimiter::new(1000000.0));
-    loop {
-        simulation.update();
-        *BODIES.lock() = Some(simulation.bodies.clone());
-        TICK.fetch_add(1, Ordering::Relaxed);
-
-        if let Some(seed) = SEED.lock().take() {
-            simulation = Simulation::new(seed);
+    thread::spawn(move || {
+        loop {
+            simulation.update();
+            *BODIES.lock() = Some(simulation.bodies.clone());
+            TICK.fetch_add(1, Ordering::Relaxed);
+    
+            if let Some(seed) = SEED.lock().take() {
+                simulation = Simulation::new(seed);
+            }
+    
+            // Cap tps
+            loop_limiter.check();
+    
+            while PAUSED.load(Ordering::Relaxed) {
+                thread::sleep(Duration::from_millis(16));
+            }
         }
+    });
 
-        // Cap tps
-        loop_limiter.check();
-
-        while PAUSED.load(Ordering::Relaxed) {
-            thread::sleep(Duration::from_millis(16));
-        }
-    }
+    quarkstrom::run::<Renderer>(config);
 }
